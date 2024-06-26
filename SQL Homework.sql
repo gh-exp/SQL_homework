@@ -390,7 +390,7 @@ ON d.location_id = l.location_id;
 SELECT first_name,
        last_name
   FROM employees
- WHERE department_id is null;
+ WHERE department_id IS NULL;
 
 -- 37. Write a query to display the names of all departments and the number of employees in them, even if there are no employees in the department.
 SELECT COUNT(e.employee_id),
@@ -455,7 +455,7 @@ SELECT e.employee_id,
        e.department_id
   FROM employees e
  WHERE e.employee_id IN (
-	SELECT distinct manager_id
+	SELECT DISTINCT manager_id
 	  FROM employees
 	 WHERE manager_id IS NOT NULL
 );
