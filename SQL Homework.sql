@@ -429,7 +429,7 @@ ON e.department_id = d.department_id
 
 -- 41. Write a query which is looking for the names of all employees whose salary is greater than 50% of their department’s total salary bill.
 
-SELECT e.first_name
+SELECT e.first_name 
        || ' '
        || e.last_name as employee_name,
        e.salary,
