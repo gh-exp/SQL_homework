@@ -142,13 +142,9 @@ SELECT e.employee_id,
        || e.last_name name,
        j.job_title
   FROM employees e
- INNER JOIN jobs j
-ON e.job_id = j.job_id
- WHERE e.salary > (
-	SELECT MAX(average)
-	  FROM (
-		SELECT AVG(e.salary) AS average
-		  FROM employees e
+ JOIN jobs j ON e.job_id = j.job_id
+ WHERE e.salary > (	SELECT MAX(average) FROM (
+		SELECT AVG(e.salary) AS average FROM employees e
 		 GROUP BY e.department_id
 	)
 );
@@ -174,16 +170,14 @@ SELECT first_name,
 SELECT e.first_name employee_first_name,
        m.first_name manager_first_name
   FROM employees e
- INNER JOIN employees m
-ON e.manager_id = m.employee_id
+ INNER JOIN employees m ON e.manager_id = m.employee_id
  ORDER BY e.first_name;
  
 -- 17. Write a SQL query to display the department name, city, and state province for each department.
 SELECT d.department_name,
        l.city,
        l.state_province
-  FROM departments d
-  JOIN locations l
+  FROM departments d   JOIN locations l
 ON d.location_id = l.location_id;
 
 -- 18. Write a query to identify all the employees who earn more than the average and who work in any of the IT departments.
@@ -192,11 +186,8 @@ SELECT e.first_name,
   FROM employees e
  INNER JOIN departments d
 ON e.department_id = d.department_id
- WHERE e.salary > (
-	  SELECT AVG(salary)
-	    FROM employees
-  )
-   and d.department_name LIKE 'IT%';
+ WHERE e.salary > (SELECT AVG(salary) FROM employees  )
+   AND d.department_name LIKE 'IT%';
 
 -- 19. Write a SQL query to find out which employees have or do not have a department. Return first name, last name, department ID, department name.
 SELECT e.first_name,
@@ -204,8 +195,7 @@ SELECT e.first_name,
        e.department_id,
        d.department_name
   FROM employees e
- INNER JOIN departments d
-ON e.department_id = d.department_id
+ INNER JOIN departments d ON e.department_id = d.department_id
  ORDER BY e.first_name;
 
 -- 20. Write a SQL query to find the employees and their managers. Those managers do not work under any manager also appear in the list. Return the first 
@@ -213,8 +203,7 @@ ON e.department_id = d.department_id
 SELECT e.first_name employee_first_name,
        m.first_name manager_first_name
   FROM employees e
- INNER JOIN employees m
-ON e.manager_id = m.employee_id
+ INNER JOIN employees m ON e.manager_id = m.employee_id
  ORDER BY e.first_name;
 
 -- 21.  Write a query to display the name (first name and last name) for those employees who gets more salary than the employee whose ID is 163.
@@ -222,11 +211,8 @@ SELECT first_name
        || ' '
        || last_name name
   FROM employees
- WHERE salary > (
-	SELECT salary
-	  FROM employees
-	 WHERE employee_id = 163
-);
+ WHERE salary > (SELECT salary FROM employees WHERE employee_id = 163);
+
 -- 22.  Write a query to display the name (first name and last name), salary, department id, job id for those employees who works in the same designation as 
 -- the employee works whose id is 169.
 SELECT first_name
@@ -236,23 +222,16 @@ SELECT first_name
        department_id,
        job_id
   FROM employees
- WHERE department_id = (
-	SELECT department_id
-	  FROM employees
-	 WHERE employee_id = 169
-);
+ WHERE department_id = (SELECT department_id FROM employees WHERE employee_id = 169);
+
 -- 23. Write a SQL query to find the employees who work in the same department as the employee with the last name Taylor. Return first name, last name and 
 -- department ID.
 SELECT first_name,
        last_name,
        department_id
   FROM employees
- WHERE department_id IN (
-	SELECT department_id
-	  FROM employees
-	 WHERE last_name = 'Taylor'
-)
-   and last_name <> 'Taylor';
+ WHERE department_id IN (SELECT department_id FROM employees WHERE last_name = 'Taylor')
+   AND last_name <> 'Taylor';
 
 -- 24. Write a SQL query to find the department name and the full name (first and last name) of the manager.
 SELECT d.department_name,
@@ -260,8 +239,7 @@ SELECT d.department_name,
        || ' '
        || e.last_name manager_full_name
   FROM departments d
-  LEFT JOIN employees e
-ON d.manager_id = e.manager_id;
+  LEFT JOIN employees e ON d.manager_id = e.manager_id;
 
 -- 25. Write a SQL query to find the employees who earn $12000 or more. Return employee ID, starting date, end date, job ID and department ID.
 SELECT e.employee_id,
@@ -270,8 +248,7 @@ SELECT e.employee_id,
        e.job_id,
        e.department_id
   FROM employees e
-  JOIN job_history jh
-ON e.employee_id = jh.employee_id
+  JOIN job_history jh ON e.employee_id = jh.employee_id
  WHERE salary >= 12000;
 
 -- 26. Write a query to display the name (first name and last name), salary, department id for those employees who earn such amount of salary which is the 
@@ -469,8 +446,7 @@ SELECT d.department_id,
 SELECT d.department_name,
        l.city
   FROM departments d
-  JOIN locations l
-ON d.location_id = l.location_id
+  JOIN locations l ON d.location_id = l.location_id
  WHERE country_id = 'US';
 
 -- 49. Write a query to display the first name and last name of employees along with the name of the department they work in. Only include employees whose last 
@@ -487,8 +463,7 @@ SELECT e.first_name,
 SELECT d.department_name,
        COUNT(e.employee_id) num_employees
   FROM departments d
-  JOIN employees e
-ON d.department_id = e.department_id
+  JOIN employees e ON d.department_id = e.department_id
  GROUP BY d.department_name
 HAVING COUNT(e.employee_id) > 2
  ORDER BY num_employees DESC;
