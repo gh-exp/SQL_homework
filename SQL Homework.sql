@@ -1,12 +1,9 @@
 -- 1. Write a query to display the employee id, employee name (first name and last name) for all employees who earn more than the average salary.
 SELECT employee_id,
-       first_name,
-       last_name
+       first_name || ' ' || last_name name
   FROM employees
- WHERE salary > (
-	SELECT AVG(salary)
-	  FROM employees
-);
+ WHERE salary > (	SELECT AVG(salary) FROM employees)
+ ORDER BY name;
 
 -- 2. Write a query to display the employee name (first name and last name), employee id, and salary of all employees who report to Payam.
 SELECT employee_id,
@@ -14,11 +11,7 @@ SELECT employee_id,
        last_name,
        salary
   FROM employees
- WHERE manager_id = (
-	SELECT employee_id
-	  FROM employees
-	 WHERE first_name = 'Payam'
-);
+ WHERE manager_id = (	SELECT employee_id FROM employees WHERE first_name = 'Payam');
 
 -- 3. Write a query to display the department number, name (first name and last name), job_id and department name for all employees in the Finance department.
 SELECT e.department_id,
@@ -27,8 +20,7 @@ SELECT e.department_id,
        e.job_id,
        d.department_name
   FROM employees e
- INNER JOIN departments d
-ON e.department_id = d.department_id
+ JOIN departments d ON e.department_id = d.department_id
  WHERE department_name = 'Finance';
 
 -- 4. Write a query to display all the information of the employees whose salary is within the range of the smallest salary and 2500.
@@ -76,16 +68,16 @@ SELECT first_name,
 
 -- 8. Write a query to display the employee number, name (first name and last name), and salary for all employees who earn more than the average salary and who work
 -- in a department with any employee with a J in their name. 
-SELECT employee_id,
-       first_name,
-       last_name,
-       salary
-  FROM employees
- WHERE salary > (
-	SELECT AVG(salary)
-	  FROM employees
-	 WHERE first_name LIKE '%J%'
-);
+SELECT e.employee_id,
+       e.first_name
+       || ' '
+       || e.last_name AS name,
+       e.salary
+FROM employees e
+WHERE e.salary > (SELECT AVG(salary) FROM employees)
+AND e.department_id IN ( SELECT e2.department_id FROM employees e2
+    WHERE e2.first_name LIKE '%J%' OR e2.last_name LIKE '%J%')
+ORDER BY name;
 
 -- 9. Write a SQL query to find those employees whose first name contains the letter ‘z’. Return first name, last name, department, city, and state province.
 SELECT e.first_name,
@@ -94,10 +86,8 @@ SELECT e.first_name,
        l.city,
        l.state_province
   FROM employees e
- INNER JOIN departments d
-ON e.department_id = d.department_id
- INNER JOIN locations l
-ON d.location_id = l.location_id
+ JOIN departments d ON e.department_id = d.department_id
+ JOIN locations l ON d.location_id = l.location_id
  WHERE first_name LIKE '%z%';
 
 -- 10. Write a SQL query to find all departments, including those without employees. Return first name, last name, department ID, department name.
@@ -106,8 +96,7 @@ SELECT e.first_name,
        d.department_id,
        d.department_name
   FROM employees e
- RIGHT JOIN departments d
-ON e.department_id = d.department_id
+ RIGHT JOIN departments d ON e.department_id = d.department_id
  ORDER BY d.department_id;
 
 -- 11. Write a query to display the employee number, name (first name and last name) and job title for all employees whose salary is smaller than any salary of 

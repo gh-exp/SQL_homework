@@ -56,6 +56,7 @@ on e.department_id = d.department_id
 	 where d.department_name = 'IT'
 );
 
+
 -- 5. Write a query to find the average salary for each job title. Return job title and average salary.
 select j.job_title,
        avg(salary)
@@ -139,7 +140,7 @@ on e.department_id = d.department_id
 	  from employees e
 	  join departments d
 	on e.department_id = d.department_id
-	 where d.department_name = 'Marketing'
+	 --where d.department_name = 'Marketing'
 );
 -- 13. Display the department name, and the highest salary in each department.
 select d.department_name,
@@ -148,3 +149,11 @@ select d.department_name,
  right join departments d
 on e.department_id = d.department_id
  group by department_name;
+
+
+ SELECT e.employee_id, e.first_name, e.last_name, e.salary
+FROM employees e
+JOIN employees e2 ON e.department_id = e2.department_id
+WHERE e.salary > (SELECT AVG(salary) FROM employees)
+  AND (e2.first_name LIKE '%J%' OR e2.last_name LIKE '%J%')
+GROUP BY e.employee_id, e.first_name, e.last_name, e.salary;
