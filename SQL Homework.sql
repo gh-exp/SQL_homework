@@ -282,7 +282,7 @@ SELECT e.first_name
        e.salary,
        e.department_id
   FROM employees e
- INNER JOIN (
+ JOIN (
 	SELECT department_id,
 	       MIN(salary) AS min_salary
 	  FROM employees
@@ -305,12 +305,9 @@ SELECT e.first_name
        e.employee_id,
        j.job_title
   FROM employees e
-  JOIN jobs j
-ON e.job_id = j.job_id
-  JOIN departments d
-ON e.department_id = d.department_id
-  JOIN locations l
-ON d.location_id = l.location_id
+  JOIN jobs j ON e.job_id = j.job_id
+  JOIN departments d ON e.department_id = d.department_id
+  JOIN locations l ON d.location_id = l.location_id
  WHERE city = 'Toronto';
 
 -- 29. Write a query to display the employee name( first name and last name ) and department for all employees for any existence of those employees whose salary is
@@ -321,19 +318,14 @@ SELECT e.first_name
        d.department_name
        -- ,e.salary
   FROM employees e
-  JOIN departments d
-ON e.department_id = d.department_id
+  JOIN departments d ON e.department_id = d.department_id
  WHERE salary > 3700; 
 
 -- 30.  Write a query to determine who earns more than employee with the last name 'Russell'.
 SELECT first_name,
        last_name
   FROM employees
- WHERE salary > (
-	SELECT salary
-	  FROM employees
-	 WHERE last_name = 'Russell'
-);
+ WHERE salary > (	SELECT salary FROM employees WHERE last_name = 'Russell');
 
 -- 31. Write a query to display the names of employees who don't have a manager.
 SELECT first_name,
@@ -353,16 +345,14 @@ ON e.department_id = d.department_id
 SELECT e.last_name,
        l.city
   FROM employees e
-  JOIN locations l
-ON e.location_id = l.location_id;
+  JOIN locations l ON e.location_id = l.location_id;
 
 -- 34. Write a query to display the job titles and the average salary of employees for each job title.
 SELECT j.job_title,
        AVG(e.salary)
   FROM jobs j
-  JOIN employees e
-ON e.job_id = j.job_id
- GROUP BY job_title;
+  JOIN employees e ON e.job_id = j.job_id
+ GROUP BY j.job_title;
 
 -- 35. Write a query to display the employee's name, department name, and the city of the department.
 SELECT e.first_name,
@@ -370,10 +360,8 @@ SELECT e.first_name,
        d.department_name,
        l.city
   FROM employees e
-  JOIN departments d
-ON e.department_id = d.department_id
-  JOIN locations l
-ON d.location_id = l.location_id;
+  JOIN departments d ON e.department_id = d.department_id
+  JOIN locations l ON d.location_id = l.location_id;
 
 -- 36. Write a query to display the names of employees who do not have a department assigned to them.
 SELECT first_name,
@@ -385,8 +373,7 @@ SELECT first_name,
 SELECT COUNT(e.employee_id),
        d.department_name
   FROM employees e
- RIGHT JOIN departments d
-ON e.department_id = d.department_id
+ RIGHT JOIN departments d ON e.department_id = d.department_id
  GROUP BY department_name;
  
 -- 38. Write a query to display the names of employees and the department names, but only include employees whose salary is above 10,000.
@@ -394,26 +381,23 @@ SELECT e.first_name,
        e.last_name,
        d.department_name
   FROM employees e
-  JOIN departments d
-ON e.department_id = d.department_id
+  JOIN departments d ON e.department_id = d.department_id
  WHERE salary > 10000;
 
 -- 39. Write a query to display department names and the average salary within each department, but only for departments with an average salary above 7000.
 SELECT d.department_name,
        AVG(e.salary)
   FROM departments d
-  JOIN employees e
-ON d.department_id = e.department_id
+  JOIN employees e ON d.department_id = e.department_id
  GROUP BY department_name
-having AVG(salary) > 10000;
+HAVING AVG(salary) > 10000;
 
 -- 40. Write a query to display the names of employees who work in the 'IT' department.
 SELECT e.first_name,
        e.last_name,
        d.department_name
   FROM employees e
-  JOIN departments d
-ON e.department_id = d.department_id
+  JOIN departments d ON e.department_id = d.department_id
  WHERE d.department_name = 'IT';
 
 -- 41. Write a query which is looking for the names of all employees whose salary is greater than 50% of their department’s total salary bill.
@@ -425,15 +409,8 @@ SELECT e.first_name
        d.department_name,
        dept.total_salary_bill
   FROM employees e
-  JOIN departments d
-ON e.department_id = d.department_id
-  JOIN (
-	SELECT department_id,
-	       SUM(salary) total_salary_bill
-	  FROM employees
-	 GROUP BY department_id
-) dept
-ON e.department_id = dept.department_id
+  JOIN departments d ON e.department_id = d.department_id
+  JOIN ( SELECT department_id, SUM(salary) total_salary_bill FROM employees GROUP BY department_id) dept ON e.department_id = dept.department_id
  WHERE e.salary > 0.5 * dept.total_salary_bill;
 
 -- 42. Write a query to get the details of employees who are managers.
@@ -443,18 +420,13 @@ SELECT e.employee_id,
        e.job_id,
        e.department_id
   FROM employees e
- WHERE e.employee_id IN (
-	SELECT DISTINCT manager_id
-	  FROM employees
-	 WHERE manager_id IS NOT NULL
-);
+ WHERE e.employee_id IN (	SELECT DISTINCT manager_id FROM employees WHERE manager_id IS NOT NULL);
 
 -- 43.  Write a query in SQL to display the department code and name for all departments which located in the city London.
 SELECT d.department_id,
        d.department_name
   FROM departments d
-  JOIN locations l
-ON d.location_id = l.location_id
+  JOIN locations l ON d.location_id = l.location_id
  WHERE city = 'London';
 
 -- 44. Write a query in SQL to display the first and last name, salary, and department ID for all those employees who earn more than the average salary and
@@ -464,10 +436,7 @@ SELECT first_name,
        salary,
        department_id
   FROM employees
- WHERE salary > (
-	SELECT AVG(salary)
-	  FROM employees
-)
+ WHERE salary > (SELECT AVG(salary) FROM employees)
  ORDER BY salary DESC;
 
 -- 45. Write a query in SQL to display the first and last name, salary, and department ID for those employees who earn more than the maximum salary of a 
@@ -477,11 +446,7 @@ SELECT first_name,
        salary,
        department_id
   FROM employees
- WHERE salary > (
-	SELECT MAX(salary)
-	  FROM employees
-	 WHERE department_id = 40
-);
+ WHERE salary > (SELECT MAX(salary) FROM employees WHERE department_id = 40);
 
 -- 46. Write a query in SQL to display the department name and Id for all departments where they located, that Id is equal to the Id for the location where 
 -- department number 30 is located.
@@ -489,20 +454,15 @@ SELECT department_name,
        department_id,
        location_id
   FROM departments
- WHERE location_id = (
-	SELECT location_id
-	  FROM departments
-	 WHERE department_id = 30
-);
+ WHERE location_id = (SELECT location_id FROM departments WHERE department_id = 30);
 
 -- 47. Write a query in SQL to display the details of departments managed by Susan.
 SELECT d.department_id,
        d.department_name,
        e.first_name manager_first_name,
        e.last_name manager_last_name
-  FROM departments d
-  JOIN employees e
-ON d.manager_id = e.employee_id
+  FROM departments d 
+  JOIN employees e ON d.manager_id = e.employee_id
  WHERE e.first_name = 'Susan';
 
 -- 48. Write a query to display the department names and the location cities. Only include departments that are located in a country with the country_id 'US'.
@@ -519,8 +479,7 @@ SELECT e.first_name,
        e.last_name,
        d.department_name
   FROM employees e
-  JOIN departments d
-ON e.department_id = d.department_id
+  JOIN departments d ON e.department_id = d.department_id
  WHERE last_name LIKE 'S%';
 
 -- 50. Write a query to display the department names and the number of employees in each department. Only include departments with more than 2 
